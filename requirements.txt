@@ -1,0 +1,8 @@
+Flask
+flask-cors
+Werkzeug
+mysql-connector-python
+PyJWT
+pandas
+numpy
+scikit-learn

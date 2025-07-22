@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Diagnosis System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            padding: 2rem 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Dashboard */
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .option-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .option-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Symptoms Grid */
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .symptom-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .symptom-item:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .symptom-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .symptom-item label {
+            cursor: pointer;
+            text-transform: capitalize;
+        }
+
+        /* Results */
+        .result-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .result-section {
+            margin: 1.5rem 0;
+        }
+
+        .result-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .result-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .result-section li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .result-section li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #90EE90;
+            font-weight: bold;
+        }
+
+        /* Disease Library */
+        .disease-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .disease-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .disease-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        /* Profile */
+        .profile-info {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard-options {
+                grid-template-columns: 1fr;
+            }
+
+            .symptoms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .success {
+            color: #27ae60;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🏥 Disease Diagnosis</div>
+            <ul class="nav-links" id="mainNav">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('login')">Login</a></li>
+                <li><a href="#" onclick="showPage('register')">Register</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+                <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+            </ul>
+            <ul class="nav-links hidden" id="dashboardNav">
+                <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+                <li><a href="#" onclick="showPage('profile')">View Profile</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Home Page -->
+            <div id="homePage" class="page">
+                <div class="hero">
+                    <h1>Disease Diagnosis </h1>
+                    <p>Get instant health insights with our advanced AI diagnostic tool</p>
+                    <a href="#" class="btn" onclick="showPage('register')">Get Started</a>
+                </div>
+                
+                <div class="card">
+                    <h2>How It Works</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                            <h3>1. Enter Symptoms</h3>
+                            <p>Select your symptoms from our comprehensive list</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
+                            <h3>2. AI Analysis</h3>
+                            <p>Our AI model analyzes your symptoms</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">💊</div>
+                            <h3>3. Get Results</h3>
+                            <p>Receive personalized recommendations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Page -->
+            <div id="loginPage" class="page hidden">
+                <div class="card" style="max-width: 400px; margin: 2rem auto;">
+                    <h2 style="text-align: center; margin-bottom: 2rem;">Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email:</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password:</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">Login</button>
+                        <div id="loginError" class="error"></div>
+                    </form>
+                    <p style="text-align: center; margin-top: 1rem;">
+                        Don't have an account? <a href="#" onclick="showPage('register')">Register here</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Register Page -->
+            <div id="registerPage" class="page hidden">
+                <div class="card" style="max-width: 400px; margin: 2rem auto;">
+                    <h2 style="text-align: center; margin-bottom: 2rem;">Register</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerName">Full Name:</label>
+                            <input type="text" id="registerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email:</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password:</label>
+                            <input type="password" id="registerPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password:</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">Register</button>
+                        <div id="registerError" class="error"></div>
+                        <div id="registerSuccess" class="success"></div>
+                    </form>
+                    <p style="text-align: center; margin-top: 1rem;">
+                        Already have an account? <a href="#" onclick="showPage('login')">Login here</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page hidden">
+                <div class="card">
+                    <div class="dashboard-header">
+                        <h1>Welcome, <span id="userName"></span>!</h1>
+                        <p>Choose an option below to get started</p>
+                    </div>
+                    
+                    <div class="dashboard-options">
+                        <div class="option-card" onclick="showPage('diagnosis')">
+                            <h3>🩺 Start Diagnosis</h3>
+                            <p>Enter your symptoms and get AI-powered diagnosis</p>
+                        </div>
+                        <div class="option-card" onclick="showPage('library')">
+                            <h3>📚 Disease Library</h3>
+                            <p>Browse comprehensive disease information</p>
+                        </div>
+                        <div class="option-card" onclick="showPage('profile')">
+                            <h3>👤 View Profile</h3>
+                            <p>Check your profile and diagnosis history</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagnosis Page -->
+            <div id="diagnosisPage" class="page hidden">
+                <div class="card">
+                    <h2>Health Diagnosis</h2>
+                    <form id="diagnosisForm">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                            <div class="form-group">
+                                <label for="dob">Date of Birth:</label>
+                                <input type="date" id="dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Weight (kg):</label>
+                                <input type="number" id="weight" min="1" max="300" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="height">Height (cm):</label>
+                                <input type="number" id="height" min="50" max="250" required>
+                            </div>
+                        </div>
+                        
+                        <h3>Select Your Symptoms:</h3>
+                        <div class="symptoms-grid" id="symptomsGrid"></div>
+                        
+                        <button type="submit" class="btn" style="margin-top: 2rem;">Get Diagnosis</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results Page -->
+            <div id="resultsPage" class="page hidden">
+                <div class="card">
+                    <h2>Diagnosis Results</h2>
+                    <div id="resultsContent"></div>
+                    <div style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 15px; margin-top: 20px; border-radius: 8px; font-family: Arial, sans-serif;">
+  <strong>Disclaimer:</strong> This system provides preliminary health guidance based on symptoms and is <em>not a substitute for professional medical advice</em>. Always consult a <strong>qualified doctor</strong> for accurate diagnosis and treatment.
+</div>
+                    <button class="btn" onclick="showPage('dashboard')" style="margin-top: 2rem;">Back to Dashboard</button>
+                </div>
+            </div>
+
+            <!-- Disease Library Page -->
+            <div id="libraryPage" class="page hidden">
+                <div class="card">
+                    <h2>Disease Library</h2>
+                    <div class="disease-list" id="diseaseList"></div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profilePage" class="page hidden">
+                <div class="card">
+                    <h2>Your Profile</h2>
+                    <div class="profile-info" id="profileInfo"></div>
+                    
+                    <h3>Diagnosis History</h3>
+                    <div id="historyContent"></div>
+                    
+                    <button class="btn btn-secondary" onclick="logout()" style="margin-top: 2rem;">Logout</button>
+                </div>
+            </div>
+
+            <!-- About Page -->
+            <div id="aboutPage" class="page hidden">
+                <div class="card">
+                    <h2>About AI Disease Diagnosis System</h2>
+                    <p>Our AI-powered diagnosis system uses advanced machine learning algorithms to analyze symptoms and provide preliminary health assessments. This tool is designed to assist in early detection and provide educational information about various health conditions.</p>
+                    
+                    <h3>Features:</h3>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li>AI-powered symptom analysis</li>
+                        <li>Personalized health recommendations</li>
+                        <li>Comprehensive disease library</li>
+                        <li>Age-specific exercise recommendations</li>
+                        <li>Specialist referral suggestions</li>
+                    </ul>
+                    
+                    <p><strong>Disclaimer:</strong> This system is for informational purposes only and should not replace professional medical advice. Always consult with healthcare professionals for proper diagnosis and treatment.</p>
+                </div>
+            </div>
+
+            <!-- Contact Page -->
+            <div id="contactPage" class="page hidden">
+                <div class="card">
+                    <h2>Contact Us</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div>
+                            <h3>Get in Touch</h3>
+                            <p>📧 Email: support@aidiagnosis.com</p>
+                            <p>📞 Phone: +916305110463,
+                                +917207074504,
+                                +919110390254
+                            </p>
+                            <p>📍 Address:ACE Engineering college,Ghatkesar,501301</p>
+                        </div>
+                        <div>
+                            <h3>Send Message</h3>
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Your Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" placeholder="Your Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <textarea rows="4" placeholder="Your Message" required></textarea>
+                                </div>
+                                <button type="submit" class="btn">Send Message</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+  <script>
+   // Global variables
+let currentUser = null;
+let authToken = null;
+
+// Restore from localStorage at the very top
+if (localStorage.getItem('currentUser')) {
+    try {
+        currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    } catch {
+        currentUser = null;
+    }
+}
+if (localStorage.getItem('authToken')) {
+    authToken = localStorage.getItem('authToken');
+}
+
+// API base URL
+const API_BASE = 'http://localhost:5000/api';
+
+// Symptoms list (must match the backend)
+const SYMPTOMS = [ "itching", "skin_rash", "nodal_skin_eruptions", "continuous_sneezing", "shivering", "chills",
+        "joint_pain", "stomach_pain", "acidity", "ulcers_on_tongue", "muscle_wasting", "vomiting",
+        "burning_micturition", "spotting_urination", "fatigue", "weight_gain", "anxiety", 
+        "cold_hands_and_feets", "mood_swings", "weight_loss", "restlessness", "lethargy",
+        "patches_in_throat", "irregular_sugar_level", "cough", "high_fever", "sunken_eyes", 
+        "breathlessness", "sweating", "dehydration", "indigestion", "headache", "yellowish_skin",
+        "dark_urine", "nausea", "loss_of_appetite", "pain_behind_the_eyes", "back_pain",
+        "constipation", "abdominal_pain", "diarrhoea", "mild_fever", "yellow_urine", 
+        "yellowing_of_eyes", "acute_liver_failure", "fluid_overload", "swelling_of_stomach",
+        "swelled_lymph_nodes", "malaise", "blurred_and_distorted_vision", "phlegm", 
+        "throat_irritation", "redness_of_eyes", "sinus_pressure", "runny_nose", "congestion",
+        "chest_pain", "weakness_in_limbs", "fast_heart_rate", "pain_during_bowel_movements",
+        "pain_in_anal_region", "bloody_stool", "irritation_in_anus", "neck_pain", "dizziness",
+        "cramps", "bruising", "obesity", "swollen_legs", "swollen_blood_vessels",
+        "puffy_face_and_eyes", "enlarged_thyroid", "brittle_nails", "swollen_extremeties",
+        "excessive_hunger", "extra_marital_contacts", "drying_and_tingling_lips",
+        "slurred_speech", "knee_pain", "hip_joint_pain", "muscle_weakness", "stiff_neck",
+        "swelling_joints", "movement_stiffness", "spinning_movements", "loss_of_balance",
+        "unsteadiness", "weakness_of_one_body_side", "loss_of_smell", "bladder_discomfort",
+        "foul_smell_of_urine", "continuous_feel_of_urine", "passage_of_gases", 
+        "internal_itching", "toxic_look_(typhos)", "depression", "irritability", 
+        "muscle_pain", "altered_sensorium", "red_spots_over_body", "belly_pain", 
+        "abnormal_menstruation", "dischromic_patches", "watering_from_eyes",
+        "increased_appetite", "polyuria", "family_history", "mucoid_sputum", "rusty_sputum",
+        "lack_of_concentration", "visual_disturbances", "receiving_blood_transfusion",
+        "receiving_unsterile_injections", "coma", "stomach_bleeding", "distention_of_abdomen",
+        "history_of_alcohol_consumption", "fluid_overload", "blood_in_sputum",
+        "prominent_veins_on_calf", "palpitations", "painful_walking", "pus_filled_pimples",
+        "blackheads", "scurring", "skin_peeling", "silver_like_dusting", "small_dents_in_nails",
+        "inflammatory_nails", "blister", "red_sore_around_nose", "yellow_crust_ooze"];
+
+// ========== DOMContentLoaded MASTER HANDLER ==========
+document.addEventListener('DOMContentLoaded', function() {
+    // Load symptoms grid
+    loadSymptomsGrid();
+    // Check if user is already logged in
+    checkAuthStatus();
+    // Set up form event listeners
+    setupEventListeners();
+    // Add mobile nav styles and button
+    injectMobileStyles();
+    setupMobileNav();
+    // Add contact form handler
+    setupContactForm();
+    // Add smooth scroll style
+    injectSmoothScrollStyle();
+});
+
+// ========== AUTH STATUS ==========
+async function checkAuthStatus() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        try {
+            const response = await fetch(`${API_BASE}/verify_token`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            if (response.ok && data.user) {
+                currentUser = data.user;
+                authToken = token;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showAuthenticatedNav();
+                showPage('dashboard');
+            } else {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('currentUser');
+                showUnauthenticatedNav();
+            }
+        } catch (error) {
+            console.error('Token verification failed:', error);
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            showUnauthenticatedNav();
+        }
+    } else {
+        showUnauthenticatedNav();
+    }
+}
+
+// ========== EVENT LISTENERS ==========
+function setupEventListeners() {
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) loginForm.addEventListener('submit', handleLogin);
+
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) registerForm.addEventListener('submit', handleRegister);
+
+    const diagnosisForm = document.getElementById('diagnosisForm');
+    if (diagnosisForm) diagnosisForm.addEventListener('submit', handleDiagnosis);
+}
+
+// ========== NAVIGATION ==========
+function showAuthenticatedNav() {
+    document.getElementById('mainNav').classList.add('hidden');
+    document.getElementById('dashboardNav').classList.remove('hidden');
+    if (currentUser && currentUser.name) {
+        document.getElementById('userName').textContent = currentUser.name;
+    } else {
+        document.getElementById('userName').textContent = "";
+    }
+}
+
+function showUnauthenticatedNav() {
+    document.getElementById('mainNav').classList.remove('hidden');
+    document.getElementById('dashboardNav').classList.add('hidden');
+}
+
+function showPage(pageId) {
+    // Hide all pages
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(page => page.classList.add('hidden'));
+    // Show selected page
+    const targetPage = document.getElementById(pageId + 'Page');
+    if (targetPage) {
+        targetPage.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // Load page-specific content
+    switch(pageId) {
+        case 'dashboard':
+            if (currentUser && currentUser.name) {
+                document.getElementById('userName').textContent = currentUser.name;
+            }
+            break;
+        case 'library':
+            loadDiseaseLibrary();
+            break;
+        case 'profile':
+            loadProfile();
+            break;
+    }
+}
+
+// ========== LOGIN ==========
+async function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const errorDiv = document.getElementById('loginError');
+    try {
+        const response = await fetch(`${API_BASE}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (response.ok && data.token && data.user) {
+            authToken = data.token;
+            currentUser = data.user;
+            localStorage.setItem('authToken', authToken);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showAuthenticatedNav();
+            showPage('dashboard');
+            errorDiv.textContent = '';
+        } else {
+            errorDiv.textContent = data.message || 'Invalid credentials';
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        errorDiv.textContent = 'Login failed. Please try again.';
+    }
+}
+
+// ========== REGISTRATION ==========
+async function handleRegister(event) {
+    event.preventDefault();
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const errorDiv = document.getElementById('registerError');
+    const successDiv = document.getElementById('registerSuccess');
+    errorDiv.textContent = '';
+    successDiv.textContent = '';
+    if (password !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match';
+        return;
+    }
+    try {
+        const response = await fetch(`${API_BASE}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            successDiv.textContent = 'Registration successful! Please login.';
+            document.getElementById('registerForm').reset();
+            setTimeout(() => showPage('login'), 2000);
+        } else {
+            errorDiv.textContent = data.message;
+        }
+    } catch (error) {
+        console.error('Registration error:', error);
+        errorDiv.textContent = 'Registration failed. Please try again.';
+    }
+}
+
+// ========== SYMPTOMS ==========
+function loadSymptomsGrid() {
+    const symptomsGrid = document.getElementById('symptomsGrid');
+    if (!symptomsGrid) return;
+    symptomsGrid.innerHTML = '';
+    SYMPTOMS.forEach(symptom => {
+        const symptomItem = document.createElement('div');
+        symptomItem.className = 'symptom-item';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `symptom_${symptom}`;
+        checkbox.value = symptom;
+        const label = document.createElement('label');
+        label.htmlFor = `symptom_${symptom}`;
+        label.textContent = symptom.replace(/_/g, ' ');
+        symptomItem.appendChild(checkbox);
+        symptomItem.appendChild(label);
+        symptomsGrid.appendChild(symptomItem);
+    });
+}
+
+// ========== DIAGNOSIS ==========
+async function handleDiagnosis(event) {
+    event.preventDefault();
+    if (!authToken) {
+        alert('Session expired. Please login again.');
+        showPage('login');
+        return;
+    }
+    const dob = document.getElementById('dob').value;
+    const weight = parseFloat(document.getElementById('weight').value);
+    const height = parseFloat(document.getElementById('height').value);
+
+    // Input validation
+    if (!dob) {
+        alert('Please enter Date of Birth');
+        return;
+    }
+    if (isNaN(weight) || weight <= 0) {
+        alert('Please enter a valid weight');
+        return;
+    }
+    if (isNaN(height) || height <= 0) {
+        alert('Please enter a valid height');
+        return;
+    }
+    // Get selected symptoms
+    const selectedSymptoms = [];
+    const checkboxes = document.querySelectorAll('#symptomsGrid input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => selectedSymptoms.push(checkbox.value));
+    if (selectedSymptoms.length === 0) {
+        alert('Please select at least one symptom');
+        return;
+    }
+    showLoading('Getting diagnosis...');
+    try {
+        const diagnosisForm = document.getElementById('diagnosisForm');
+        if (diagnosisForm) diagnosisForm.querySelector('button[type="submit"]').disabled = true;
+        const response = await fetch(`${API_BASE}/diagnose`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify({
+                dob,
+                weight,
+                height,
+                symptoms: selectedSymptoms
+            })
+        });
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonError) {
+            throw new Error('Invalid response from server');
+        }
+        if (response.ok && data.result) {
+            displayResults(data.result);
+            showPage('results');
+        } else {
+            alert('Diagnosis failed: ' + (data.message || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Diagnosis error:', error);
+        alert('Diagnosis failed. Please try again.');
+    } finally {
+        hideLoading();
+        const diagnosisForm = document.getElementById('diagnosisForm');
+        if (diagnosisForm) diagnosisForm.querySelector('button[type="submit"]').disabled = false;
+    }
+}
+
+// ========== DISPLAY RESULTS ==========
+function displayResults(result) {
+    const resultsContent = document.getElementById('resultsContent');
+    resultsContent.innerHTML = `
+        <div class="result-card">
+            <h2>🏥 Diagnosis: ${result.disease}</h2>
+            <p><strong>Recommended Specialist:</strong> ${result.specialist}</p>
+            <div class="result-section">
+                <h3>🔹 Precautions:</h3>
+                <ul>
+                    ${result.precautions.map(precaution => `<li>${precaution}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="result-section">
+                <h3>🍎 Diet Recommendations:</h3>
+                <ul>
+                    ${result.diet.map(diet => `<li>${diet}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="result-section">
+                <h3>🏃‍♂️ Exercise Recommendations:</h3>
+                <ul>
+                    ${Array.isArray(result.exercise) 
+                        ? result.exercise.map(exercise => `<li>${exercise}</li>`).join('') 
+                        : (typeof result.exercise === 'object'
+                            ? Object.values(result.exercise).map(exercise => `<li>${exercise}</li>`).join('')
+                            : `<li>${result.exercise}</li>`)}
+                </ul>
+            </div>
+            <div style="margin-top: 2rem;">
+                <a href="${result.wikipedia_link}" target="_blank" class="btn btn-secondary">
+                    📖 Learn More on Wikipedia
+                </a>
+                <button onclick="openHospitalsMap()" class="btn btn-secondary" style="margin-left: 1rem;">
+                    🏥 Find Nearby Hospitals
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// ========== DISEASE LIBRARY ==========
+async function loadDiseaseLibrary() {
+    const diseaseList = document.getElementById('diseaseList');
+    try {
+        const response = await fetch(`${API_BASE}/diseases`);
+        const data = await response.json();
+        if (response.ok && Array.isArray(data.diseases)) {
+            diseaseList.innerHTML = '';
+            data.diseases.forEach(disease => {
+                const diseaseItem = document.createElement('div');
+                diseaseItem.className = 'disease-item';
+                diseaseItem.innerHTML = `
+                    <h3>${disease.name}</h3>
+                    <p><strong>Specialist:</strong> ${disease.specialist}</p>
+                    <p><strong>Precautions:</strong> ${disease.precautions.slice(0, 2).join(', ')}...</p>
+                `;
+                diseaseItem.addEventListener('click', () => showDiseaseDetails(disease));
+                diseaseList.appendChild(diseaseItem);
+            });
+        } else {
+            diseaseList.innerHTML = '<p>No diseases found.</p>';
+        }
+    } catch (error) {
+        console.error('Failed to load disease library:', error);
+        diseaseList.innerHTML = '<p>Failed to load disease library</p>';
+    }
+}
+
+function showDiseaseDetails(disease) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    `;
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        margin: 1rem;
+    `;
+    content.innerHTML = `
+        <h2>${disease.name}</h2>
+        <p><strong>Specialist:</strong> ${disease.specialist}</p>
+        <h3>Precautions:</h3>
+        <ul>${disease.precautions.map(p => `<li>${p}</li>`).join('')}</ul>
+        <h3>Diet:</h3>
+        <ul>${disease.diet.map(d => `<li>${d}</li>`).join('')}</ul>
+        <h3>Exercise:</h3>
+        <ul>${
+            Array.isArray(disease.exercise)
+                ? disease.exercise.map(e => `<li>${e}</li>`).join('')
+                : (typeof disease.exercise === 'object'
+                    ? Object.values(disease.exercise).map(e => `<li>${e}</li>`).join('')
+                    : `<li>${disease.exercise}</li>`)
+        }</ul>
+        <button class="btn close-modal-btn" style="margin-top: 1rem;">Close</button>
+    `;
+    modal.className = 'modal';
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.classList.contains('close-modal-btn')) {
+            modal.remove();
+        }
+    });
+}
+
+// ========== PROFILE ==========
+async function loadProfile() {
+    const profileInfo = document.getElementById('profileInfo');
+    const historyContent = document.getElementById('historyContent');
+    if (!authToken) {
+        profileInfo.innerHTML = '<p>Please login to view profile.</p>';
+        historyContent.innerHTML = '';
+        return;
+    }
+    try {
+        const response = await fetch(`${API_BASE}/profile`, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+        if (response.ok && data.profile) {
+            profileInfo.innerHTML = `
+                <h3>${data.profile.name}</h3>
+                <p><strong>Email:</strong> ${data.profile.email}</p>
+                <p><strong>Member since:</strong> ${new Date(data.profile.created_at).toLocaleDateString()}</p>
+            `;
+            if (Array.isArray(data.history) && data.history.length > 0) {
+                historyContent.innerHTML = data.history.map(item => `
+                    <div class="history-item">
+                        <h4>${item.disease}</h4>
+                        <p><strong>Date:</strong> ${new Date(item.created_at).toLocaleDateString()}</p>
+                        <p><strong>Symptoms:</strong> ${Array.isArray(item.symptoms) ? item.symptoms.join(', ') : 'N/A'}</p>
+                    </div>
+                `).join('');
+            } else {
+                historyContent.innerHTML = '<p>No diagnosis history found.</p>';
+            }
+        } else {
+            profileInfo.innerHTML = '<p>Failed to load profile.</p>';
+            historyContent.innerHTML = '<p>Failed to load history.</p>';
+        }
+    } catch (error) {
+        console.error('Failed to load profile:', error);
+        profileInfo.innerHTML = '<p>Failed to load profile</p>';
+        historyContent.innerHTML = '<p>Failed to load history</p>';
+    }
+}
+
+// ========== LOGOUT ==========
+function logout() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    currentUser = null;
+    authToken = null;
+    showUnauthenticatedNav();
+    showPage('home');
+}
+
+// ========== LOADING ==========
+function showLoading(message = 'Loading...') {
+    if (document.getElementById('loadingModal')) return;
+    const loading = document.createElement('div');
+    loading.id = 'loadingModal';
+    loading.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 3000;
+    `;
+    loading.innerHTML = `
+        <div style="background: white; padding: 2rem; border-radius: 15px; text-align: center;">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem;">${message}</p>
+        </div>
+    `;
+    document.body.appendChild(loading);
+}
+function hideLoading() {
+    const loading = document.getElementById('loadingModal');
+    if (loading) {
+        loading.remove();
+    }
+}
+
+// ========== UTILS ==========
+function formatSymptomName(symptom) {
+    return symptom.replace(/_/g, ' ')
+                 .replace(/\b\w/g, l => l.toUpperCase());
+}
+
+// ========== CONTACT FORM ==========
+function setupContactForm() {
+    const contactForm = document.querySelector('#contactPage form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+    }
+}
+
+// ========== SMOOTH SCROLL STYLE ==========
+function injectSmoothScrollStyle() {
+    if (document.getElementById('smoothScrollStyle')) return;
+    const style = document.createElement('style');
+    style.id = 'smoothScrollStyle';
+    style.textContent = `
+        .page {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .page.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// ========== MOBILE NAV ==========
+function setupMobileNav() {
+    if (window.innerWidth <= 768) {
+        const navContainer = document.querySelector('.nav-container');
+        if (navContainer && !navContainer.querySelector('.mobile-nav-btn')) {
+            const toggleBtn = document.createElement('button');
+            toggleBtn.innerHTML = '☰';
+            toggleBtn.className = 'mobile-nav-btn';
+            toggleBtn.style.cssText = `
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: #667eea;
+            `;
+            toggleBtn.onclick = toggleMobileNav;
+            navContainer.appendChild(toggleBtn);
+        }
+    }
+}
+function injectMobileStyles() {
+    if (document.getElementById('mobileNavStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'mobileNavStyles';
+    style.textContent = `
+        @media (max-width: 768px) {
+            .nav-links.mobile-open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 1rem;
+                box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+function toggleMobileNav() {
+    const navLinks = document.querySelector('.nav-links');
+    navLinks.classList.toggle('mobile-open');
+}
+function openHospitalsMap() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            window.open(`https://www.google.com/maps/search/hospital/@${lat},${lon},14z`, '_blank');
+        }, function() {
+            window.open("https://www.google.com/maps/search/hospitals+near+me", "_blank");
+        });
+    } else {
+        window.open("https://www.google.com/maps/search/hospitals+near+me", "_blank");
+    }
+}
+</script>
+</body>
+</html>
